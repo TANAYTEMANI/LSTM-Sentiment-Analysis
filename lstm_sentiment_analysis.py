@@ -1,3 +1,4 @@
+#importing libraries
 import numpy
 import matplotlib.pyplot as plt
 from keras.datasets import imdb
@@ -8,6 +9,7 @@ from keras.layers import Embedding
 from keras.preprocessing import sequence
 from keras_preprocessing.sequence import pad_sequences
 
+#load data
 top_words = 5000
 (X_train, y_train),(X_test, y_test) = imdb.load_data(num_words=top_words)
 
@@ -15,6 +17,7 @@ print(X_train[1])
 print(type(X_train[1]))
 print(len(X_train[1]))
 
+#truncate and/or pad input sequences
 max_review_length = 600
 X_train = pad_sequences(X_train, maxlen=max_review_length)
 X_test = pad_sequences(X_test, maxlen=max_review_length)
@@ -22,6 +25,8 @@ X_test = pad_sequences(X_test, maxlen=max_review_length)
 print(X_train.shape)
 print(X_train[1])
 
+
+# Create the model
 embedding_vector_length = 32
 
 model = Sequential()
@@ -29,7 +34,6 @@ model.add(Embedding(top_words + 1, embedding_vector_length, input_length=max_rev
 model.add(LSTM(100))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
 print(model.summary())
 
 hist = model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=1, validation_data=(X_test, y_test))
